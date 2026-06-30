@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Way Tech Invoice System</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <section id="loginView" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <img src="logo.png" alt="Job Way Tech Logo">
+                <div>
+                    <h1>Job Way Tech</h1>
+                    <p>Invoice System Portal</p>
+                </div>
+            </div>
+
+            <h2>Welcome back</h2>
+            <p class="auth-copy">Sign in to manage students, invoices, fees, and reports.</p>
+
+            <form id="loginForm" class="auth-form">
+                <label class="form-label" for="loginUsername">Username</label>
+                <input id="loginUsername" name="username" type="text" placeholder="Login@JWT.com" required autocomplete="username">
+
+                <label class="form-label" for="loginPassword">Password</label>
+                <input id="loginPassword" name="password" type="password" placeholder="Enter password" required autocomplete="current-password">
+
+                <div id="otpGroup" class="hidden">
+                    <label class="form-label" for="loginOtp">Email OTP</label>
+                    <input id="loginOtp" name="otp" type="text" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit OTP" autocomplete="one-time-code">
+                    <button type="button" id="resendOtpBtn" class="btn-secondary auth-resend">Resend OTP</button>
+                </div>
+
+                <div id="loginError" class="auth-error" aria-live="polite"></div>
+
+                <button id="loginSubmitBtn" type="submit" class="btn-success auth-submit">Send OTP</button>
+            </form>
+
+            <p id="loginHint" class="auth-hint">Username: Login@JWT.com. OTP will be sent to Jobwaytech@gmail.com and pushpamekala133@gmail.com.</p>
+        </div>
+    </section>
+
+    <div id="appShell" class="app-shell hidden">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo-section">
+            <img src="logo.png" alt="Job Way Tech Logo">
+            <h2>Job Way Tech</h2>
+            <p>Invoice System</p>
+        </div>
+
+        <nav>
+
+            <ul>
+
+                <li class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </li>
+
+                <li class="nav-item" data-page="courses">
+                    <i class="fas fa-book"></i>
+                    <span>Courses</span>
+                </li>
+
+                <li class="nav-item" data-page="students">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
+                </li>
+
+                <li class="nav-item" data-page="invoices">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Invoices</span>
+                </li>
+
+                <li class="nav-item" data-page="fees">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Fee Collection</span>
+                </li>
+
+                <li class="nav-item" data-page="reports">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Reports</span>
+                </li>
+
+                <li class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+                <h1>Job Way Tech Invoice System</h1>
+                <p>GST Enabled Training Institute ERP</p>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="company-info">
+                    <span>GSTIN : 37BGXPH0623Q1ZP</span>
+                </div>
+                <button type="button" id="logoutBtn" class="btn-danger small">Logout</button>
+            </div>
+
+        </header>
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard" class="page active-page">
+
+            <h2>Dashboard</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Total Students</h3>
+                    <p id="totalStudents">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Total Revenue</h3>
+                    <p id="totalRevenue">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Pending Fees</h3>
+                    <p id="pendingFees">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Invoices</h3>
+                    <p id="totalInvoices">0</p>
+                </div>
+
+            </div>
+
+            <div class="dashboard-table">
+
+                <h3>Recent Payments</h3>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="recentPaymentsTable">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- COURSES -->
+
+        <section id="courses" class="page">
+
+            <div class="section-header">
+
+                <h2>Course Management</h2>
+
+            </div>
+
+            <form id="courseForm">
+                <h3 style="margin-bottom:12px;">Add New Course</h3>
+
+                <input type="hidden" id="courseId">
+
+                <div class="grid">
+                    <div>
+                        <label class="form-label">Course Name</label>
+                        <input type="text" id="courseName" placeholder="Course Name">
+                    </div>
+
+                    <div>
+                        <label class="form-label">Monthly Fee (₹)</label>
+                        <input type="number" id="courseFee" placeholder="Monthly Fee (₹)" value="2000" readonly>
+                    </div>
+
+                    <div>
+                        <label class="form-label">Duration (Months)</label>
+                        <input type="number" id="courseDuration" placeholder="Duration (Months)">
+                    </div>
+
+                </div>
+
+                <button id="courseSaveBtn" type="submit"
+                    class="btn-success">
+
+                    Save Course
+
+                </button>
+
+            </form>
+
+            <h3 style="margin:18px 0 8px;">Courses Available</h3>
+            <div class="table-wrapper">
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Course</th>
+                            <th>Duration</th>
+                            <th>Training Fee</th>
+                            <th>GST</th>
+                            <th>Total</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="courseTableBody">
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+
+        <!-- STUDENTS -->
+
+        <section id="students" class="page">
+
+            <div class="section-header">
+                <h2>Student Management</h2>
+
+                <button id="addStudentBtn" class="btn-primary">
+                    Add Student
+                </button>
+            </div>
+
+            <div class="form-container">
+
+                <form id="studentForm">
+
+                    <input type="hidden" id="studentId">
+
+                    <div class="grid">
+
+                        <div>
+                            <label class="form-label">Student Name</label>
+                            <input type="text" id="studentName" placeholder="Student Name" required>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" id="studentMobile" placeholder="Mobile Number">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Email</label>
+                            <input type="email" id="studentEmail" placeholder="Email">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Qualification</label>
+                            <input type="text" id="studentQualification" placeholder="Qualification">
+                        </div>
+
+                        <div>
+                            <label class="form-label">College Name</label>
+                            <input type="text" id="collegeName" placeholder="College Name">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Joining Date</label>
+                            <input type="date" id="joiningDate">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Student State</label>
+                            <select id="studentState">
+                                <option value="">Select State</option>
+                                <option value="same">Same State (AP)</option>
+                                <option value="other">Other State</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Course</label>
+                            <select id="studentCourse">
+                                <option value="">Select Course</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Monthly Fee (₹)</label>
+                            <input type="number" id="studentCourseFee" placeholder="Course Fee" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">GST Amount (₹)</label>
+                            <input type="number" id="studentGST" placeholder="GST Amount" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Total Fee (₹)</label>
+                            <input type="number" id="studentTotalFee" placeholder="Total Fee" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Aadhar Number</label>
+                            <input type="text" id="aadharNumber" placeholder="Aadhar Number">
+                        </div>
+
+                    </div>
+
+                    <textarea
+                        id="studentAddress"
+                        placeholder="Address"></textarea>
+
+                    <button type="submit" class="btn-success">
+                        Save Student
+                    </button>
+
+                </form>
+                
+
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+        <th>Name</th>
+        <th>Course</th>
+        <th>Total Fee</th>
+        <th>Invoice</th>
+        <th>Fee Collection</th>
+        <th>Fee Status</th>
+        <th>Actions</th>
+    </tr>
+
+                </thead>
+
+                <tbody id="studentTableBody">
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <!-- INVOICES -->
+
+        <section id="invoices" class="page">
+
+            <div class="section-header">
+
+                <h2>GST Invoice Generator</h2>
+
+                <button id="generateInvoiceBtn"
+                    class="btn-primary">
+
+                    New Invoice
+
+                </button>
+
+            </div>
+
+            <div class="form-container">
+                <form id="invoiceForm">
+                    <div class="grid">
+                        <div>
+                            <label class="form-label">Invoice No</label>
+                            <input type="text" id="invoiceNumber" placeholder="Invoice No" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Date</label>
+                            <input type="date" id="invoiceDate" required>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Select Student</label>
+                            <select id="invoiceStudentSelect">
+                                <option value="">Select Student</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Student Name</label>
+                            <input type="text" id="invoiceStudentName" placeholder="Student Name" required>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Student ID / Registration No</label>
+                            <input type="text" id="invoiceStudentId" placeholder="Student ID / Registration No">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Course Name</label>
+                            <input type="text" id="invoiceCourseName" placeholder="Course Name" required readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Duration (Months)</label>
+                            <input type="text" id="invoiceCourseDuration" placeholder="Duration" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Batch</label>
+                            <input type="text" id="invoiceBatch" placeholder="Batch">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Mobile Number</label>
+                            <input type="text" id="invoiceMobile" placeholder="Mobile Number">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Student State</label>
+                            <select id="invoiceStudentState">
+                                <option value="same">Same State (AP)</option>
+                                <option value="other">Other State</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">GST Amount (₹)</label>
+                            <input type="text" id="invoiceGSTAmount" placeholder="GST Amount" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">GST Breakdown</label>
+                            <input type="text" id="invoiceGSTDetails" placeholder="GST Breakdown" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Monthly Fee (₹)</label>
+                            <input type="text" id="invoiceMonthlyFee" placeholder="Monthly Fee" readonly>
+                        </div>
+                        <div>
+                            <label class="form-label">Training Fee (₹)</label>
+                            <input type="text" id="invoiceTrainingFee" placeholder="Training Fee (₹)" readonly>
+                        </div>
+                        <div>
+                            <label class="form-label">Total Amount (₹)</label>
+                            <input type="text" id="invoiceTotalAmount" placeholder="Total Amount" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Payment Mode</label>
+                            <select id="invoicePaymentMode">
+                                <option value="">Payment Mode</option>
+                                <option>Cash</option>
+                                <option>UPI</option>
+                                <option>Bank Transfer</option>
+                                <option>Card</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Transaction / Reference Number</label>
+                            <input type="text" id="invoiceTransactionNumber" placeholder="Transaction / Reference Number">
+                        </div>
+
+                        <div>
+                            <label class="form-label">Payment Deadline / Last Date</label>
+                            <input type="date" id="invoicePaymentDate" required>
+                        </div>
+
+                        <div style="grid-column:1 / span 2;">
+                            <label class="form-label">Amount in Words</label>
+                            <textarea id="invoiceAmountInWords" placeholder="Amount in Words" readonly></textarea>
+                        </div>
+
+                    </div>
+
+                    <div style="margin-top:14px;">
+                        <button type="submit" class="btn-success">
+                            Save & Print Invoice
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Invoice No</th>
+                        <th>Student</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="invoiceTableBody">
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <!-- FEES -->
+
+        <section id="fees" class="page">
+
+            <h2>Installment Tracking & Fee Collection</h2>
+
+            <form id="feeForm">
+
+                <div class="grid">
+
+                    <select id="feeStudent">
+                        <option value="">Select Student</option>
+                    </select>
+
+                    <select id="feeInvoiceSelect">
+                        <option value="">Select Invoice</option>
+                    </select>
+
+                    <input type="text"
+                        id="feeCourseName"
+                        placeholder="Course Name">
+
+                    <input type="text"
+                        id="feeBatch"
+                        placeholder="Batch">
+                </div>
+                <div class="grid">
+
+                    <div>
+                        <label class="form-label" for="feeTrainingFee">Training Fee (₹)</label>
+                        <input type="number"
+                            id="feeTrainingFee"
+                            placeholder="Training Fee (₹)"
+                            min="0"
+                            step="0.01">
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="feeTotalAmount">Total Fee (₹)</label>
+                        <input type="number"
+                            id="feeTotalAmount"
+                            placeholder="Total Fee (₹)"
+                            readonly>
+                    </div>
+
+                </div>
+
+                <div class="grid">
+
+                    <input type="number"
+                        id="paidAmount"
+                        placeholder="Paid Amount">
+
+                    <input type="date"
+                        id="paymentDate">
+
+                    <select id="paymentMode">
+
+                        <option>Cash</option>
+                        <option>UPI</option>
+                        <option>Bank Transfer</option>
+                        <option>Card</option>
+
+                    </select>
+
+                    <input type="text"
+                        id="transactionNumber"
+                        placeholder="Transaction / UTR No">
+
+                </div>
+
+                <button type="submit"
+                    class="btn-success">
+
+                    Record Payment
+
+                </button>
+
+            </form>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Student</th>
+                        <th>Total Fee</th>
+                        <th>Paid</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="feeTableBody">
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <!-- REPORTS -->
+
+        <section id="reports" class="page">
+
+            <h2>Reports</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Monthly Collection</h3>
+                    <p id="monthlyCollection">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>GST Collected</h3>
+                    <p id="gstCollected">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Pending Amount</h3>
+                    <p id="reportPending">₹0</p>
+                </div>
+
+            </div>
+
+            <button class="btn-primary">
+                Export Excel
+            </button>
+
+        </section>
+
+        <!-- SETTINGS -->
+
+        <section id="settings" class="page">
+
+            <h2>Settings</h2>
+
+            <div class="settings-box">
+
+                <label>
+                    GST Percentage
+                </label>
+
+                <input type="number"
+                    id="gstRate"
+                    value="18">
+
+                <label>
+                    Invoice Prefix
+                </label>
+
+                <input type="text"
+                    id="invoicePrefix"
+                    value="JWT-2026">
+
+                <button class="btn-success" type="button" id="saveSettingsBtn">
+                    Save Settings
+                </button>
+
+                <button class="btn-danger" type="button" id="clearAppStorageBtn" style="margin-top:16px;">
+                    Clear App Data & Refresh
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
