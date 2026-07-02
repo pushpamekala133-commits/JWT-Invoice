@@ -2,11 +2,16 @@
   "name": "jobwaytech-fullstack",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "packageManager": "npm@9.0.0",
   "scripts": {
-    "dev": "npm --prefix backend run dev",
-    "start": "npm --prefix backend start",
-    "frontend": "npm --prefix frontend run dev",
-    "backend": "npm --prefix backend run dev",
-    "build": "npm --prefix frontend run build"
+    "dev": "npm --workspace backend run dev",
+    "start": "npm --workspace backend start",
+    "frontend": "npm --workspace frontend run dev",
+    "backend": "npm --workspace backend run dev",
+    "build": "npm --workspace frontend run build"
   }
 }
